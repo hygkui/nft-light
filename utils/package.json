@@ -1,0 +1,12 @@
+{
+  "name": "erc-contracts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "axios-https-proxy-fix": "^0.17.1",
+    "dotenv": "^10.0.0",
+    "pg": "^8.7.1"
+  }
+}
