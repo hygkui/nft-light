@@ -11,12 +11,12 @@ contract ZLight is ERC721, ERC721Enumerable, Ownable {
 
     uint256 public constant MAX_SUPPLY = 50;
     uint256 public constant MAX_PUBLIC_MINT = 47;
-    uint256 public constant PRICE_PER_TOKEN = 0.6 ether;
-
+    uint256 public constant PRICE_PER_TOKEN = 0.06 ether;
+    uint256 public constant RESERVE_AMOUNT = 3;
 
     constructor() ERC721("ZLight", "ZLLT") {
+      reserveMint(); // 部署时直接预挖
     }
-
   
     function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override(ERC721, ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, tokenId);
@@ -34,14 +34,16 @@ contract ZLight is ERC721, ERC721Enumerable, Ownable {
         return _baseURIextended;
     }
 
-    function reserve(uint256 n) public onlyOwner {
-      uint supply = totalSupply();
+    function reserveMint() public onlyOwner {
       uint i;
-      for (i = 0; i < n; i++) {
-          _safeMint(msg.sender, supply + i);
+      for (i = 0; i < RESERVE_AMOUNT; i++) {
+          _safeMint(msg.sender, i);
       }
     }
 
+    /**
+      是否销售的开关
+     */
     function setSaleState(bool newState) public onlyOwner {
         saleIsActive = newState;
     }

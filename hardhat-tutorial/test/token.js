@@ -31,3 +31,14 @@ describe('token contract', function () {
  
 //   })
 // })
+
+describe('token deploy then reverse mint', function () {
+  it('should deploy and mint', async () => {
+    const [owner] = await ethers.getSigners();
+    const Token = await ethers.getContractFactory("ZLight");
+    const ZLightToken = await Token.deploy();
+    expect(await ZLightToken.RESERVE_AMOUNT()).to.equal(3);
+    expect(await ZLightToken.balanceOf(owner.address)).to.equal(3);
+    expect(await ZLightToken.totalSupply()).to.equal(3)
+  })
+})
