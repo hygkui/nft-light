@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract tLight is ERC721, ERC721Enumerable, Ownable {
     using Address for address;
-    bool public saleIsActive = false;
+    bool public saleIsActive = false; // 公开销售状态
     string private _baseURIextended;
 
     uint256 public constant MAX_SUPPLY = 50;
@@ -18,12 +18,46 @@ contract tLight is ERC721, ERC721Enumerable, Ownable {
 
     mapping(uint256 => address) private _owners; // nft owners
 
+    bool public isAllowListActive = false; // 白名单预售状态
+    mapping(address => uint8) private _allowList; // 白名单
+
     constructor() ERC721("tLight", "tLLT") {
       reserveMint(RESERVE_AMOUNT); // 部署时直接预挖
     }
   
     function ownerOfTokens(uint256 tokenId) public view returns(address) {
         return _owners[tokenId];
+    }
+
+    // 切换白名单状态
+    function setIsAllowListActive(bool _isAllowListActive) external onlyOwner {
+      isAllowListActive = _isAllowListActive;
+    }
+
+    // 添加白名单的地址列表，允许mint的数量限制
+    function setAllowList(address[] calldata addresses, uint8 numAllowedToMint) external onlyOwner {
+        for (uint256 i = 0; i < addresses.length; i++) {
+            _allowList[addresses[i]] = numAllowedToMint;
+        }
+    }
+
+    // 查询钱包地址可以mint的数量（为0即不在白名单）
+    function numAvailableToMint(address addr) external view returns (uint8) {
+        return _allowList[addr];
+    }
+
+    // 白名单mint
+    function mintAllowList(uint8 numberOfTokens) external payable {
+        uint256 ts = totalSupply();
+        require(isAllowListActive, "Allow list is not active");
+        require(numberOfTokens <= _allowList[msg.sender], "Exceeded max available to purchase");
+        require(ts + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
+        require(PRICE_PER_TOKEN * numberOfTokens <= msg.value, "Ether value sent is not correct");
+
+        _allowList[msg.sender] -= numberOfTokens;
+        for (uint256 i = 0; i < numberOfTokens; i++) {
+            _safeMint(msg.sender, ts + i);
+        }
     }
 
     // 是否已经被mint
