@@ -1,0 +1,58 @@
+主要需求是最近市场常见的，“开盲盒”式的 NFT 发行，大概是这样：
+> 基本需求：
+1. NFT mint 合约
+2. 用多个素材随机生成头像图片，作为 NFT 的元数据
+3. 以上打通后，基本就可以完成：用户“开盲盒”式的 mint NFT，见项目参考
+> 项目参考：
+https://www.cyberkongz.com/
+https://www.pudgypenguins.io/
+> mint 代码参考：
+CyberKongzVX：https://etherscan.io/address/0x57a204aa1042f6e66dd7730813f4024114d74f37#code
+Pudgy Penguin：https://etherscan.io/address/0xBd3531dA5CF5857e7CfAA92426877b022e612cf8#code
+> 图片生成参考（不能直接用）：
+https://github.com/multiavatar
+https://github.com/wave-charts/avatar-gen
+
+
+企鹅的合约
+https://etherscan.io/address/0xBd3531dA5CF5857e7CfAA92426877b022e612cf8#code
+
+=====
+
+
+Mint
+1. 基于 erc721 的 mint
+  ○ 按照设定的固定价格出售，如 0.6 e，用户购买时支付 0.6e + tx fee
+2. 总量上限暂定是50
+  ○ 可能会低于这个数字，约30~50之间
+3. nft 的基本形态是 图片或动图，主题展示辉光管钟
+4. 其中有部分 nft，会有特殊属性
+  ○ 约10个
+  ○ 特殊属性指：特殊含义的话，如 "long bitcoin" 等
+  ○ 特殊属性是“随机”开出的，但图片和元数据都是设计好的
+5. nft 的元数据需要 freeze
+6. nft 的 tokenid 需要从0或者1开始，到50或49结束
+兑换
+● 在一段时间后（3~6个月），用户可以到官网兑换对应的实体产品，需要验证用户是否拥有 nft 并进行下一步邮寄地址填写
+问题
+1. 团队是否可以预先保留x个？
+  ○ 比如：公布总量为43个，团队预留3个，剩余40个开放出售，由用户自主付费 mint
+2. 网页前端是否需要特别的处理或支持？ web3.js 是否就足够了？
+3. mint 完成后，打通到 opensea collection 是否有技术上的门槛？ // 参考kongcongz的，跟opensee好打通。
+  ○ 目前看导入合约地址即可（也可以进行测试网发布测试）
+4. 兑换部分实现起来复杂程度如何？前端需要特别处理吗？
+5. 用户兑换后，是否有比较合适的途径标注“已兑换”？如 针对 nft 销毁重铸，不动 nft 只记录并公告到社交网络等？
+
+实际物品兑换这里，要求注册提供地址，发送快递？
+使用数据库记录就好
+
+
+合约信息：
+总量： 43
+价格：0.6 eth
+团队保留： 3个
+公开发售： 40个
+
+后面再考虑，通过数据库来记录吧
+ - 兑换实物，只需要填写通信地址即可，nft编号。如何验证你是否拥有呢？授权签名吗？
+  - Claim 领取奖励。
